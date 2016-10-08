@@ -29,7 +29,13 @@ void init() { }
 
 task auton() { 
 
+	
+	if(SensorValue[dgtl1]) {
 	moveDr(127, -127, 500); // Turns robot.
+	}
+	else {
+	moveDr(127, -127, 500); // Turns robot.
+	}
 	moveDr(127, 127, 2000); // Moves the robot forward.
 	moveLft(127, 1000); // Moves the lift up.
 	moveDr(127, 127, 100); // Moves the robot in order for the lift 
