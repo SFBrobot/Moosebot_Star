@@ -10,20 +10,43 @@
 
 #include "rkCompetition.h"
 
+void moveDr(pwrL, pwrR, time) { 
+
+	motor[lfWheel] = motor[lbWheel] = pwrL;
+	motor[rfWheel] = motor[rbWheel] = pwrR;
+	wait1Msec(time);
+}
+
+void moveLft(pwr, sec) {
+	
+	motor[w1Arm] = motor[w2Arm] = motor[w3Arm] = motor[w4Arm] = pwr;	
+	wait1Msec(sec);
+}
+
 void init() { }
 
-task auton() { }
+task auton() { 
+
+	moveDr(127, -127, 500);
+	moveDr(127, 127, 2000);
+	moveLft(127, 1000);
+	moveDr(127, 127, 100);
+	moveLft(-127, 1000);
+	
+}
 
 task userOp() {
 	while(true) {
+// 		Moves the drive.
 		motor[lfWheel] = motor[lbWheel] = vexRT[Ch3] + vexRT[Ch1];
 		motor[rfWheel] = motor[rbWheel] = vexRT[Ch3] - vexRT[Ch1];
 
-//		motor[rfWheel] = (vexRT[Ch3] - vexRT[Ch1]);
-//		motor[lfWheel] = (vexRT[Ch3] + vexRT[Ch1]);
-//		motor[rbWheel] = (vexRT[Ch1] - vexRT[Ch3]);
-//		motor[lbWheel] = (vexRT[Ch1] + vexRT[Ch3]);
-
+// 		motor[rfWheel] = (vexRT[Ch3] - vexRT[Ch1]);
+// 		motor[lfWheel] = (vexRT[Ch3] + vexRT[Ch1]);
+// 		motor[rbWheel] = (vexRT[Ch1] - vexRT[Ch3]);
+// 		motor[lbWheel] = (vexRT[Ch1] + vexRT[Ch3]);
+		
+// 		Moves the hook.
 		if(vexRT[Btn5U] == 1 || vexRT[Btn6U] == 1) {
 			motor[w1Arm] = 127;
 			motor[w2Arm] = 127;
@@ -44,6 +67,6 @@ task userOp() {
 		}
 	}
 }
-
+// 		Stops all commands.
 void endAuton() { }
 void endUserOp() { }
