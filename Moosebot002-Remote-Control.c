@@ -10,7 +10,7 @@
 
 #include "rkCompetition.h"
 
-void moveDr(pwrL, pwrR, time) { 
+void moveDr(int pwrL, int pwrR, int time) { 
 	
 // 	Moves the drive autonomously.
 	motor[lfWheel] = motor[lbWheel] = pwrL;
@@ -18,7 +18,7 @@ void moveDr(pwrL, pwrR, time) {
 	wait1Msec(time);
 }
 
-void moveLft(pwr, sec) {
+void moveLft(int pwr, int sec) {
 	
 // 	Moves the arm autonomously.
 	motor[w1Arm] = motor[w2Arm] = motor[w3Arm] = motor[w4Arm] = pwr;	
