@@ -11,7 +11,8 @@
 #include "rkCompetition.h"
 
 void moveDr(pwrL, pwrR, time) { 
-
+	
+// 	Moves the drive autonomously.
 	motor[lfWheel] = motor[lbWheel] = pwrL;
 	motor[rfWheel] = motor[rbWheel] = pwrR;
 	wait1Msec(time);
@@ -19,6 +20,7 @@ void moveDr(pwrL, pwrR, time) {
 
 void moveLft(pwr, sec) {
 	
+// 	Moves the arm autonomously.
 	motor[w1Arm] = motor[w2Arm] = motor[w3Arm] = motor[w4Arm] = pwr;	
 	wait1Msec(sec);
 }
@@ -27,11 +29,11 @@ void init() { }
 
 task auton() { 
 
-	moveDr(127, -127, 500);
-	moveDr(127, 127, 2000);
-	moveLft(127, 1000);
-	moveDr(127, 127, 100);
-	moveLft(-127, 1000);
+	moveDr(127, -127, 500); // Turns robot.
+	moveDr(127, 127, 2000); // Moves the robot forward.
+	moveLft(127, 1000); // Moves the lift up.
+	moveDr(127, 127, 100); // Moves the robot in order for the lift 
+	moveLft(-127, 1000); // Moves the lift down, allowing the robot to be lifted into the air.
 	
 }
 
