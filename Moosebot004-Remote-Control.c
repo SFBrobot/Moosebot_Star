@@ -24,15 +24,21 @@ void pre_auton() { }
 
 task autonomous() { 
 
+	arm(127, 250);
+	motor[claw] = 127;
+	motor[port6] = 127;
 	xDrive(63, 63, 1000);
 	arm(127, 250);
 	motor[claw] = 127;
+	motor[port6] = 127;
 	wait1Msec(250);
 	xDrive(31, 31, 250);
 	motor[claw] = -127;
+	motor[port6] = -127;
 	wait1Msec(250);
 	xDrive(31, 31, 100);
 	motor[claw] = 127;
+	motor[port6] = 127;
 	wait1Msec(250);
 
 }
@@ -42,15 +48,17 @@ task usercontrol()
 	while(true) {
 		motor[lfWheel] = motor[lbWheel] = vexRT[Ch3] + vexRT[Ch1];
 		motor[rfWheel] = motor[rbWheel] = vexRT[Ch3] - vexRT[Ch1];
-		
-	if(vexRT[Btn8U] == 1) {
+	if(vexRT[Btn6U] == 1) {
 		motor[claw] = 63;
+		motor[port6] = 63;
 }
-	else if(vexRT[Btn8D] == 1) {
+	else if(vexRT[Btn6D] == 1) {
 		motor[claw] = -63;
+		motor[port6] = -63;
 }
 	else {
-	motor[claw] = 0;		
+	motor[claw] = 0;
+	motor[port6] = 0;
 }
 		if(vexRT[Btn5U] == 1) {
 			motor[aMotor] = 127;
