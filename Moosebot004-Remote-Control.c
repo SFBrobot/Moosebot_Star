@@ -25,20 +25,20 @@ void pre_auton() { }
 task autonomous() { 
 
 	arm(127, 250);
-	motor[claw] = 127;
-	motor[port6] = 127;
+	motor[claw] = -127;
+	motor[port6] = -127;
 	xDrive(63, 63, 1000);
 	arm(127, 250);
-	motor[claw] = 127;
-	motor[port6] = 127;
-	wait1Msec(250);
-	xDrive(31, 31, 250);
 	motor[claw] = -127;
 	motor[port6] = -127;
 	wait1Msec(250);
-	xDrive(31, 31, 100);
+	xDrive(31, 31, 250);
 	motor[claw] = 127;
 	motor[port6] = 127;
+	wait1Msec(250);
+	xDrive(31, 31, 100);
+	motor[claw] = -127;
+	motor[port6] = -127;
 	wait1Msec(250);
 
 }
