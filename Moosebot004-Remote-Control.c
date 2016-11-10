@@ -2,7 +2,8 @@
 #pragma config(Motor,  port2,           lbWheel,       tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           aMotor,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           bMotor,        tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port5,           claw,          tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port5,           lClaw,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port6,           rClaw,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port7,           cMotor,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           dMotor,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           rbWheel,       tmotorVex393_MC29, openLoop, reversed)
@@ -24,8 +25,28 @@ void pre_auton() { }
 
 task autonomous() { 
 
-	arm(127, 250);
-	arm(0, 250);
+	motor[lClaw] = -127;
+	motor[rClaw] = -127;
+	wait1Msec(300);
+	motor[lClaw] = 0;
+	motor[rClaw] = 0;
+	wait1Msec(200);
+	arm(127, 200);
+	arm(0, 350);
+	arm(-127, 100);
+	arm(0, 350);
+	standard(127, 127, 500);
+	standard(0, 0, 350);
+	motor[lClaw] = 127;
+	motor[rClaw] = 127;
+	wait1Msec(250);
+	motor[lClaw] = 0;
+	motor[rClaw] = 0;
+	wait1Msec(300);
+	standard(-127, -100, 500);
+	standard(0, 0, 200);
+	standard(-127, 127, 5);
+	standard(0, 0, 200);
 	
 
 }
