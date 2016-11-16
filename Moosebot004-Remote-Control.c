@@ -12,42 +12,49 @@
 
 #include "Vex_Competition_Includes.c"
 
-void xDrive(int pwrA, int pwrB, int s) {
+void standard(int pwrA, int pwrB, int s) { // Function for the standard drive of the robot.
 	motor[lfWheel] = motor[lbWheel] = pwrA;
 	motor[rfWheel] = motor[rbWheel] = pwrB;
 	wait1Msec(s);
 }
-void arm(int pwr, int s) {
+void arm(int pwr, int s) { // Function for the arm of
 	motor[aMotor] = motor[bMotor] = motor[cMotor] = motor[dMotor] = pwr;
 	wait1Msec(s);
 }
+void clawMovement(int pwr, int s) {
+	motor[lClaw] = pwr;
+	motor[rClaw] = pwr;
+	wait1Msec(s);
+}
+
 void pre_auton() { }
 
-task autonomous() { 
+task autonomous() {
 
-	motor[lClaw] = -127;
-	motor[rClaw] = -127;
-	wait1Msec(300);
-	motor[lClaw] = 0;
-	motor[rClaw] = 0;
-	wait1Msec(200);
+	clawMovement(-127, 300); // Opens the claw.
+	clawMovement(0, 200);
 	arm(127, 200);
 	arm(0, 350);
 	arm(-127, 100);
 	arm(0, 350);
-	standard(127, 127, 500);
+	standard(127, 127, 1400);
 	standard(0, 0, 350);
-	motor[lClaw] = 127;
-	motor[rClaw] = 127;
-	wait1Msec(250);
-	motor[lClaw] = 0;
-	motor[rClaw] = 0;
-	wait1Msec(300);
-	standard(-127, -100, 500);
+	clawMovement(127, 850);
+	clawMovement(0, 300);
+	standard(-127, -70, 500);
 	standard(0, 0, 200);
-	standard(-127, 127, 5);
+	standard(-127, 127, 345);
 	standard(0, 0, 200);
-	
+	standard(-127, -127, 2000);
+	standard(0, 0, 200);
+	arm(127, 1500);
+	arm(0, 200);
+	clawMovement(127, 750);
+	clawMovement(0, 250);
+	clawMovement(-127, 750);
+	clawMovement(0, 250);
+	arm(-127, 1500);
+	arm(0, 250);
 
 }
 
@@ -57,16 +64,16 @@ task usercontrol()
 		motor[lfWheel] = motor[lbWheel] = vexRT[Ch3] + vexRT[Ch1];
 		motor[rfWheel] = motor[rbWheel] = vexRT[Ch3] - vexRT[Ch1];
 	if(vexRT[Btn6U] == 1) {
-		motor[claw] = 63;
-		motor[port6] = 63;
+		motor[lClaw] = 127;
+		motor[rClaw] = 127;
 }
 	else if(vexRT[Btn6D] == 1) {
-		motor[claw] = -63;
-		motor[port6] = -63;
+		motor[lClaw] = -127;
+		motor[rClaw] = -127;
 }
 	else {
-	motor[claw] = 0;
-	motor[port6] = 0;
+	motor[lClaw] = 0;
+	motor[rClaw] = 0;
 }
 		if(vexRT[Btn5U] == 1) {
 			motor[aMotor] = 127;
@@ -86,7 +93,7 @@ task usercontrol()
 			motor[cMotor] = 0;
 			motor[dMotor] = 0;
 	}
-	
+
 
 	}
 }
