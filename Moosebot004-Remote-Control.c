@@ -52,7 +52,7 @@ task autonomous() { // Function that runs the autonomous program.
 	standard(-127, -127, 2000);
 	standard(0, 0, 250);
 	arm(127, 1200);
-	arm(0, 0, 300);
+	arm(0, 300);
 	clawMovement(127, 250);
 	clawMovement(0, 250);
 	arm(-127, 600);
