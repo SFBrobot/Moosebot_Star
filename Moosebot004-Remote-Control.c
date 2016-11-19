@@ -39,9 +39,11 @@ task autonomous() { // Function that runs the autonomous program.
 	arm(0, 350); // Stops the arm.
 	arm(-127, 100); // Lowers the arm.
 	arm(0, 350); // Stops the arm.
-	standard(127, 127, 1000);
+	standard(127, 127, 750);
 	standard(0, 0, 250);
 	standard(-127, 127, 250);
+	standard(0, 0, 250);
+	standard(127, 127, 500);
 	standard(0, 0, 250);
 	clawMovement(127, 900);
 	clawMovement(0, 250);
