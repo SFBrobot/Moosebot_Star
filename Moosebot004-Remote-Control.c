@@ -41,10 +41,16 @@ task autonomous() { // Function that runs the autonomous program.
 	arm(0, 350); // Stops the arm.
 	standard(127, 127, 1400); // Moves the robot forward.
 	standard(0, 0, 350); // Stops the robot.
-	clawMovement(127, 850); // Closes that claw.
-	clawMovement(0, 300); // Stops the claw.
-	standard(-127, -70, 500); // Moves the robot backwards while slightly turning left.
+	clawMovement(127, 950); // Closes that claw.
+	clawMovement(0, 200); // Stops the claw.
+	standard(-127, -70, 250); // Moves the robot backwards while slightly turning left.
 	standard(0, 0, 200); // Stops the robot.
+	clawMovement(127, 400);
+	clawMovement(0, 100);
+	standard(-127, -70, 250); // Moves the robot backwards while slightly turning left.
+	standard(0, 0, 200); // Stops the robot.
+	clawMovement(127, 400);
+	clawMovement(0, 100);
 	standard(-127, 127, 345); // Turns the robot left a bit.
 	standard(0, 0, 200); // Stops the robot.
 	standard(-127, -127, 2000); // Moves the robot backwards.
