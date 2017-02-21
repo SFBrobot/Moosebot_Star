@@ -27,6 +27,8 @@
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
 
+#include "Autons/autons.h"
+
 // This code is for the VEX cortex platform
 #pragma platform(VEX2)
 
@@ -284,7 +286,7 @@ task usercontrol() {
 			else
 				setLift(-127);
 		}
-		
+
 		else
 			setLift(getPidPwr(&LiftPid));
 
