@@ -1,6 +1,7 @@
 
 
 void redCubeAuton() {
+
 	wait1Msec(20);
 }
 
