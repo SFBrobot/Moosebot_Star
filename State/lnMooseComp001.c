@@ -77,20 +77,7 @@ void pre_auton()
 
 task autonomous()
 {
-  //switch(autonCt) {
-  //	case 1:
-  //		redPoleAuton();
-  //		break;
-  //	case 2:
-  //		bluePoleAuton();
-  //		break;
-  //	case 3:
-  //		redCubeAuton();
-  //		break;
-  //	case 4:
-  //		blueCubeAuton();
-  //		break;
-  //}
+  redCubeAuton();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -121,7 +108,7 @@ task usercontrol() {
 		upTog(&LiftTog, (vexRT[Btn5U] ^ vexRT[Btn5D]));
 
 		for(int i = 0; i < 4; i++)
-			sticks[i] = (fabs(vexRT[i]) > 7)
+			sticks[i] = (fabs(vexRT[i]) > 15)
 				? vexRT[i]
 				: 0;
 
