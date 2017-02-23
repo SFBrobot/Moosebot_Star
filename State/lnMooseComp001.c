@@ -48,20 +48,14 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-Toggle LiftTog;
-
-Pid LiftPid,
-	DrivePidL,
-	DrivePidR;
-
 void pre_auton()
 {
   //autonCt = lcdAuton();
   startTask(battLvls);
 
-  initPid(&LiftPid, 127, .1, .001, .01);
-  initPid(&DrivePidR, 127, .1, .001, .01);
-  initPid(&DrivePidL, 127, .1, .001, .01);
+  initPid(&LiftPid, 100, 127, .1, .001, .01);
+  initPid(&DrivePidR, 100, 127, .1, .001, .01);
+  initPid(&DrivePidL, 100, 127, .1, .001, .01);
 
 }
 
@@ -91,19 +85,12 @@ task autonomous()
 /*---------------------------------------------------------------------------*/
 
 task usercontrol() {
-  int timeLast,
-  	time,
-  	dt,
-  	sticks[4] = { 0, 0, 0, 0 };
-
+  int sticks[4] = { 0, 0, 0, 0 };
 
 	startTask(battLvls);
 
 	while(true) {
-		timeLast = time;
-		time = nSysTime;
-		dt = time - timeLast;
-		upPid(&LiftPid, SensorValue[liftEnc], dt);
+		upPid(&LiftPid, SensorValue[liftEnc]);
 
 		upTog(&LiftTog, (vexRT[Btn5U] ^ vexRT[Btn5D]));
 
