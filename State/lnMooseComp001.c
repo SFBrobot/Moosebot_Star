@@ -29,6 +29,38 @@
 
 #include "includes.h"
 
+#ifndef LN_UTILS
+#define LN_UTILS
+
+#define setDriveR(pwr) motor[frWheel] = \
+	motor[brWheel] = \
+	pwr
+
+#define setDriveL(pwr) motor[flWheel] = \
+	motor[blWheel] = \
+	pwr
+
+#define setLift(pwr) motor[tlLift] = \
+	motor[mlLift] = \
+	motor[blLift] = \
+	motor[trLift] = \
+	motor[mrLift] = \
+	motor[brLift] = \
+	pwr
+
+#define setClaw(pwr) SensorValue[lClawPn] = \
+	SensorValue[rClawPn] = \
+	pwr
+
+void setDrive(int lPwr, int rPwr) {
+	setDriveL(lPwr);
+	setDriveR(rPwr);
+	return;
+}
+
+#endif
+
+
 // This code is for the VEX cortex platform
 #pragma platform(VEX2)
 
@@ -85,7 +117,7 @@ task autonomous()
 /*---------------------------------------------------------------------------*/
 
 task usercontrol() {
-  int sticks[4] = { 0, 0, 0, 0 };
+  int sticks[4];
 
 	startTask(battLvls);
 
@@ -102,7 +134,7 @@ task usercontrol() {
 		setDrive(sticks[2] + sticks[0], sticks[2] - sticks[0]);
 
 		if(falling(&LiftTog))
-			setPidTarg(&LiftPid, SensorValue[liftEnc]);
+			setPid(&LiftPid, SensorValue[liftEnc]);
 
 		if(togVal(&LiftTog)) {
 			if(vexRT[Btn5U])

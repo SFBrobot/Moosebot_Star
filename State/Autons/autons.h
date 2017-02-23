@@ -1,4 +1,36 @@
 
+#ifndef LN_UTILS
+#define LN_UTILS
+
+#define setDriveR(pwr) motor[frWheel] = \
+	motor[brWheel] = \
+	pwr
+
+#define setDriveL(pwr) motor[flWheel] = \
+	motor[blWheel] = \
+	pwr
+
+#define setLift(pwr) motor[tlLift] = \
+	motor[mlLift] = \
+	motor[blLift] = \
+	motor[trLift] = \
+	motor[mrLift] = \
+	motor[brLift] = \
+	pwr
+
+
+#define setClaw(pwr) SensorValue[lClawPn] = \
+	SensorValue[rClawPn] = \
+	pwr
+
+void setDrive(int lPwr, int rPwr) {
+	setDriveL(lPwr);
+	setDriveR(rPwr);
+	return;
+}
+
+#endif
+
 void deployClaw() {
 	setLift(127);
 	wait1Msec(400);
@@ -6,6 +38,15 @@ void deployClaw() {
 	wait1Msec(20);
 	setLift(-127);
 	wait1Msec(250);
+	setLift(0);
+}
+
+void throw() {
+	setLift(127);
+	while(SensorValue[liftEnc] < 2500)
+		wait1Msec(20);
+	setClaw(false);
+	wait1Msec(50);
 	setLift(0);
 }
 
@@ -125,7 +166,7 @@ void redCubeAuton() {
 	throw(); //Lift arm and open claw to throw cube to far zone
 	setPid(&LiftPid, 0); //Lower lift
 	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]);
+		setLift(upPid(&LiftPid, SensorValue[liftEnc]));
 		wait1Msec(20);
 	}
 	setPid(&DrivePidL, 1800); //Advance left drive to drive to back stars
@@ -147,7 +188,7 @@ void redCubeAuton() {
 	throw(); //Raise lift and open claw to throw stars
 	setPid(&LiftPid, 0); //Lower lift
 	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]);
+		setLift(upPid(&LiftPid, SensorValue[liftEnc]));
 		wait1Msec(20);
 	}
 	setDriveL(127);
