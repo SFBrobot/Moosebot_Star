@@ -1,4 +1,4 @@
-void setDriveBoth(int pwr, int time){
+void driveForTime(int pwr, int time){
 	setDriveL = setDriveR = (pwr);
 	wait1Msec(time);
 	setDriveL = setDriveR = 0;
@@ -60,5 +60,5 @@ void redCubeAuton() {
 	driveForDist(1200, 0);
 	throw(); //Raise lift and open claw to throw stars
 	driveClaw(0);
-	setDriveBoth(127, 500);
+	driveForTime(127, 500);
 }
