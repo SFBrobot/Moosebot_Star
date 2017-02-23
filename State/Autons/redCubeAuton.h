@@ -1,3 +1,9 @@
+void setDriveBoth(int pwr, int time){
+	setDriveL = setDriveR = (pwr);
+	wait1Msec(time);
+	setDriveL = setDriveR = 0;
+}
+
 void driveForDist(int lDist, int rDist){
 	setPid(&DrivePidL, lDist); //Advance left drive to middle tape line
 	setPid(&DrivePidR, rDist); //Advance right drive to middle tape line
@@ -19,6 +25,20 @@ void driveLiftForDist(int lDist, int rDist){
 	}
 }
 
+void driveClaw(int claw){
+	setPid(&LiftPid, 0); //Lower lift
+	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
+		setLift(upPid(&LiftPid, SensorValue[liftEnc]);
+		wait1Msec(20);
+	}
+}
+
+void driveRobot(int lpwr, int rpwr, int time){
+	setDriveL(lpwr);
+	setDriveR(rpwr);
+	wait1Msec(time);
+	setDriveBoth(0);
+}
 
 void redCubeAuton() {
 	deployClaw();
@@ -37,22 +57,8 @@ void redCubeAuton() {
 	driveForDist(1800, 600);
 	setClaw(true);
 	wait1Msec(100);
-	setPid(&DrivePidL, 1200); //Back up to fence (left)
-	setPid(&DrivePidR, 0); //back up to fence (right)
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
+	driveForDist(1200, 0);
 	throw(); //Raise lift and open claw to throw stars
-	setPid(&LiftPid, 0); //Lower lift
-	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]);
-		wait1Msec(20);
-	}
-	setDriveL(127);
-	setDriveR(127);
-	wait1Msec(500);
-	setDriveL(0);
-	setDriveR(0);
+	driveClaw(0);
+	setDriveBoth(127, 500);
 }
