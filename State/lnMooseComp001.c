@@ -29,6 +29,38 @@
 
 #include "includes.h"
 
+#ifndef LN_UTILS
+#define LN_UTILS
+
+#define setDriveR(pwr) motor[frWheel] = \
+	motor[brWheel] = \
+	pwr
+
+#define setDriveL(pwr) motor[flWheel] = \
+	motor[blWheel] = \
+	pwr
+
+#define setLift(pwr) motor[tlLift] = \
+	motor[mlLift] = \
+	motor[blLift] = \
+	motor[trLift] = \
+	motor[mrLift] = \
+	motor[brLift] = \
+	pwr
+
+#define setClaw(pwr) SensorValue[lClawPn] = \
+	SensorValue[rClawPn] = \
+	pwr
+
+void setDrive(int lPwr, int rPwr) {
+	setDriveL(lPwr);
+	setDriveR(rPwr);
+	return;
+}
+
+#endif
+
+
 // This code is for the VEX cortex platform
 #pragma platform(VEX2)
 
@@ -48,20 +80,14 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-Toggle LiftTog;
-
-Pid LiftPid,
-	DrivePidL,
-	DrivePidR;
-
 void pre_auton()
 {
   //autonCt = lcdAuton();
   startTask(battLvls);
 
-  initPid(&LiftPid, 127, .1, .001, .01);
-  initPid(&DrivePidR, 127, .1, .001, .01);
-  initPid(&DrivePidL, 127, .1, .001, .01);
+  initPid(&LiftPid, 100, 127, .1, .001, .01);
+  initPid(&DrivePidR, 100, 127, .1, .001, .01);
+  initPid(&DrivePidL, 100, 127, .1, .001, .01);
 
 }
 
@@ -91,19 +117,12 @@ task autonomous()
 /*---------------------------------------------------------------------------*/
 
 task usercontrol() {
-  int timeLast,
-  	time,
-  	dt,
-  	sticks[4] = { 0, 0, 0, 0 };
-
+  int sticks[4];
 
 	startTask(battLvls);
 
 	while(true) {
-		timeLast = time;
-		time = nSysTime;
-		dt = time - timeLast;
-		upPid(&LiftPid, SensorValue[liftEnc], dt);
+		upPid(&LiftPid, SensorValue[liftEnc]);
 
 		upTog(&LiftTog, (vexRT[Btn5U] ^ vexRT[Btn5D]));
 
@@ -115,7 +134,7 @@ task usercontrol() {
 		setDrive(sticks[2] + sticks[0], sticks[2] - sticks[0]);
 
 		if(falling(&LiftTog))
-			setPidTarg(&LiftPid, SensorValue[liftEnc]);
+			setPid(&LiftPid, SensorValue[liftEnc]);
 
 		if(togVal(&LiftTog)) {
 			if(vexRT[Btn5U])
