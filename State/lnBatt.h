@@ -16,7 +16,7 @@ task battLvls() {
 
 		for(int i = 0; i < 10; i++) {
 			battLvls[0] += nImmediateBatteryLevel / 10000.;
-			battLvls[1] += SensorValue[in1] / 456.;
+			battLvls[1] += SensorValue[in1] / 280.;
 			battLvls[2] += BackupBatteryLevel / 10000.;
 			wait1Msec(20);
 		}
