@@ -10,17 +10,15 @@
 	motor[blWheel] = \
 	pwr
 
-#define setLift(pwr) motor[tlLift] = \
-	motor[mlLift] = \
-	motor[blLift] = \
-	motor[trLift] = \
-	motor[mrLift] = \
-	motor[brLift] = \
+#define setLift(pwr) motor[lLift1] = \
+	motor[lLift2] = \
+	motor[rLift1] = \
+	motor[rLift2] = \
 	pwr
 
 
-#define setClaw(pwr) SensorValue[lClawPn] = \
-	SensorValue[rClawPn] = \
+#define setClaw(pwr) motor[lClaw] = \
+	motor[rClaw] = \
 	pwr
 
 void setDrive(int lPwr, int rPwr) {
