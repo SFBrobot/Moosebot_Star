@@ -27,6 +27,22 @@ void setDrive(int lPwr, int rPwr) {
 	return;
 }
 
+void throw(int timeout = 1000) {
+	int timeStart = nSysTime;
+	setLift(127);
+	do {
+		wait1Msec(20);
+	} while((nSysTime - timeStart < timeout) || (SensorValue[liftEnc] < 1500));
+	setClaw(-127);
+	wait1Msec(100);
+	setLift(0);
+	setClaw(0);
+	wait1Msec(20);
+	setLift(-127);
+	wait1Msec(500);
+	setLift(0);
+}
+
 #endif
 
 void deployClaw() {
@@ -88,6 +104,12 @@ int setPid(Pid* pid, int targ) {
 	return pid->target;
 }
 
+int movePidBy(Pid* pid, int deltaTarg) {
+	pid->target += deltaTarg;
+	pid->integ = 0;
+	return pid->target;
+}
+
 int upPid(Pid* pid, int val) {
 	pid->timeLast = pid->time;
 	pid->time = nSysTime;
@@ -120,78 +142,69 @@ Pid LiftPid,
 	DrivePidL,
 	DrivePidR;
 
-void redCubeAuton() {
+int autonTargs[2][5] = { { 1200, 1800, -800, 1200, -1200 },
+		{ 1200, -1800, -800, 1200, -1200 } };
+
+bool flipSide[5] = { false, true, false, false, false };
+
+void leftAuton() {
+
+	int clawPotLast;
+
 	deployClaw();
-	setPid(&DrivePidL, 400); //Advance left drive to middle tape line
-	setPid(&DrivePidR, 400); //Advance right drive to middle tape line
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
+	for(int i = 0; i < sizeof(autonTargs) / (2 * sizeof(int)); i++) {
+		movePidBy(&DrivePidL, autonTargs[0][i]);
+		movePidBy(&DrivePidR, autonTargs[1][i]);
+		while(!DrivePidL.bIsOnTarg || !DrivePidR.bIsOnTarg) {
+			upPid(&DrivePidL, SensorValue[lDriveEnc]);
+			upPid(&DrivePidR, SensorValue[rDriveEnc]);
+			wait1Msec(20);
+		}
+		if(i == 0 || i == 4) {
+			setClaw(127);
+			do {
+				clawPotLast = SensorValue[clawPot];
+				wait1Msec(20);
+			} while(fabs(SensorValue[clawPot] - clawPotLast) > 25);
+			setClaw(0);
+			setLift(31);
+		}
+		else if(i == 2 || i == 5)
+			throw();
 	}
-	setPid(&DrivePidL, 800); //Advance left drive to turn right
-	setPid(&DrivePidR, 0); //Reverse right drive to turn right
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
+}
+
+void rightAuton() {
+
+	int clawPotLast;
+
+	deployClaw();
+	for(int i = 0; i < sizeof(autonTargs) / (2 * sizeof(int)); i++) {
+		if(flipSide[i]) {
+			movePidBy(&DrivePidL, -autonTargs[0][i]);
+			movePidBy(&DrivePidR, -autonTargs[1][i]);
+		}
+
+		else {
+			movePidBy(&DrivePidL, autonTargs[0][i]);
+			movePidBy(&DrivePidR, autonTargs[1][i]);
+		}
+
+		while(!DrivePidL.bIsOnTarg || !DrivePidR.bIsOnTarg) {
+			upPid(&DrivePidL, SensorValue[lDriveEnc]);
+			upPid(&DrivePidR, SensorValue[rDriveEnc]);
+			wait1Msec(20);
+		}
+		if(i == 0 || i == 4) {
+			setClaw(127);
+			do {
+				clawPotLast = SensorValue[clawPot];
+				wait1Msec(20);
+			} while(fabs(SensorValue[clawPot] - clawPotLast) > 25);
+			setClaw(0);
+			setLift(31);
+		}
+		else if(i == 2 || i == 5)
+			throw();
 	}
-	setPid(&DrivePidL, 1200); //Advance left drive side to cube
-	setPid(&DrivePidR, 800); //Advance right side to cube
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
-	setClaw(true); //Grab cube
-	wait1Msec(50);
-	setPid(&LiftPid, 500); //Reduce resistance by lifting cube off ground
-	setPid(&DrivePidL, 1600); //Advance left drive to turn right (facing away from fence)
-	setPid(&DrivePidR, 400); //Reverse right drive to turn right
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]));
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
-	setPid(&DrivePidL, 1200); //Reverse left drive to back up to fence
-	setPid(&DrivePidR, 0); //Reverse right side to back up to fence
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
-	throw(); //Lift arm and open claw to throw cube to far zone
-	setPid(&LiftPid, 0); //Lower lift
-	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]));
-		wait1Msec(20);
-	}
-	setPid(&DrivePidL, 1800); //Advance left drive to drive to back stars
-	setPid(&DrivePidR, 600); //Advance right side to drive to back stars
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
-	setClaw(true);
-	wait1Msec(50);
-	setPid(&DrivePidL, 1200); //Back up to fence (left)
-	setPid(&DrivePidR, 0); //back up to fence (right)
-	while(!(DrivePidL.bIsOnTarg && DrivePidR.bIsOnTarg)) {
-		setDriveL(upPid(&DrivePidL, SensorValue[lDriveEnc]));
-		setDriveR(upPid(&DrivePidR, SensorValue[rDriveEnc]));
-		wait1Msec(20);
-	}
-	throw(); //Raise lift and open claw to throw stars
-	setPid(&LiftPid, 0); //Lower lift
-	while(!LiftPid.bIsOnTarg) { //Wait until lift is down
-		setLift(upPid(&LiftPid, SensorValue[liftEnc]));
-		wait1Msec(20);
-	}
-	setDriveL(127);
-	setDriveR(127);
-	wait1Msec(500);
-	setDriveL(0);
-	setDriveR(0);
 }
