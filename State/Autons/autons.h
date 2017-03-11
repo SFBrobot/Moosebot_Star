@@ -55,15 +55,6 @@ void deployClaw() {
 	setLift(0);
 }
 
-void throw() {
-	setLift(127);
-	while(SensorValue[liftEnc] < 2500)
-		wait1Msec(20);
-	setClaw(false);
-	wait1Msec(50);
-	setLift(0);
-}
-
 typedef struct {
 	int target,
 		val,
